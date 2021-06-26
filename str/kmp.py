@@ -51,12 +51,14 @@ def kmp(p, s):
         else:
             i = next[i] + 1
         if i==plen:
-            return (j-i, j)
+            return (j-i+1, j+1)
     return False
 
 
 if __name__ == '__main__':
     p = 'abcabdeabcabc'
+    p = 'cabdabcab'
     s = 'abcabdeabcabdabcabdeabcabcabcabdeabcabd'
     print(generate_next(p))
     print(kmp(p, s))
+    print(re.search(p, s))
