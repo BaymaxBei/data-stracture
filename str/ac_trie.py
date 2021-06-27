@@ -42,12 +42,12 @@ class AcTrie:
         father.word_len.append(len(word))
 
     def search(self, string) -> List:
-        # bfs查找trie树，匹配字符串string
+        # 查找trie树，匹配字符串string
         node = self.trie
         res = []
         i = 0
         while i<len(string):
-            father = node
+            pre = node
             for w in node.next:
                 if w==string[i]:
                     node = node.next[w]
@@ -60,7 +60,7 @@ class AcTrie:
                     i += 1
                     break
             else:
-                if father.is_root:
+                if pre.is_root:
                     i += 1
                 node = node.fail
         return res
