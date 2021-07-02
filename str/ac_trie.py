@@ -63,23 +63,20 @@ class AcTrie:
         node = self.trie
         res = []
         i = 0
-        while i<len(string):
-            pre = node
-            for w in node.next:
-                if w==string[i]:
-                    node = node.next[w]
-                    if node.word_len:
-                        for l in node.word_len:
-                            res_i = [i-l+1, i+1, string[i-l+1: i+1]]
-                            res.append(res_i)
-                    if not node.next:
-                        node = node.fail
-                    i += 1
+        for i in range(len(string)):
+            s = string[i]
+            for k, cur_node in node.next.items():
+                if k==s:
+                    if cur_node.word_len:
+                        for wlen in cur_node.word_len:
+                            res.append([i-wlen+1, i+1, string[i-wlen+1:i+1]])
+                    node = cur_node
                     break
             else:
-                if pre.is_root:
-                    i += 1
-                node = node.fail
+                while s not in node.next and not node.is_root:
+                    node = node.fail
+                if s in node.next:
+                    node = node.next[s]
         return res
 
 # 目标：搞清楚什么时候next(i)=i+1,什么时候next(i)=i
@@ -92,7 +89,7 @@ class AcTrie:
 #      若失配，若上一节点是root节点，则next(i)=i+1，否则next(i)=i
 
 if __name__ == '__main__':
-    words = ['she', 'hers', 'his', 'he', 'hi', 'hih']
+    words = ['she', 'hers', 'his', 'he', 'hi', 'hih', 'bg']
     string = 'abgvhihisbcsrshers'
 #     words = ['break', '循环', '没', '语句', '公司', '']
 #     string = 'break语句用来终止循环语句,即循环条件没有False条件或者序列还没被完全递归完,也会停止执行循'
@@ -113,19 +110,19 @@ if __name__ == '__main__':
     print(ac_trie)
     print(ac_trie.search(string))
 
-    time_ac_start = time.time()
-    for i in range(1000):
-        ac_trie.search(string)
-    time_ac_end = time.time()
+    # time_ac_start = time.time()
+    # for i in range(1000):
+    #     ac_trie.search(string)
+    # time_ac_end = time.time()
 
-    time_re_start = time.time()
-    for i in range(1000):
-        # re.findall('|'.join(words), string)
-        for w in words:
-            re.findall(w, string)
-    time_re_end = time.time()
-    for w in words:
-        print(re.findall(w, string))
+    # time_re_start = time.time()
+    # for i in range(1000):
+    #     # re.findall('|'.join(words), string)
+    #     for w in words:
+    #         re.findall(w, string)
+    # time_re_end = time.time()
+    # for w in words:
+    #     print(re.findall(w, string))
 
     # ac_py = ahocorasick.Automaton()
     # for w in words:
@@ -138,8 +135,8 @@ if __name__ == '__main__':
     # time_ac_py_end = time.time()
 
 
-    print('time ac: {}'.format(time_ac_end-time_ac_start))
-    print('time re: {}'.format(time_re_end-time_re_start))
+    # print('time ac: {}'.format(time_ac_end-time_ac_start))
+    # print('time re: {}'.format(time_re_end-time_re_start))
     # print('time ac_py: {}'.format(time_ac_py_end-time_ac_py_start))
 
     # print(re.findall('a|ab|bc', 'abc'))
