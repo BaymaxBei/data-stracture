@@ -55,6 +55,40 @@ def DLR(head, res):
     if head.right:
         DLR(head.right, res)
 
+def DLR_stack(head):
+    '''
+    前序遍历二叉树，非递归，用栈
+    '''
+    node = head
+    stack = []
+    res = []
+    while node is not None or len(stack)!=0:
+        if node is not None:
+            stack.append(node)
+            res.append(node.value)
+            node = node.left
+        else:
+            node = stack.pop(-1)
+            node = node.right
+    return res
+
+def LDR_stack(head):
+    '''
+    中序遍历二叉树，非递归，用栈
+    '''
+    node = head
+    stack = []
+    res = []
+    while node is not None or len(stack)!=0:
+        if node is not None:
+            stack.append(node)
+            node = node.left
+        else:
+            node = stack.pop(-1)
+            res.append(node.value)
+            node = node.right
+    return res
+
 def is_same_arr(arr1, arr2):
     '''
     # 判断两个数组是否相同
@@ -140,19 +174,23 @@ if __name__ == '__main__':
     # bst = generate_BST_by_LRD2(arr, 0, len(arr)-1)
     # print('End.')
     
-    for i in range(10000):
+    for i in range(10):
         
         bst = generate_random_BST(1, 100, 1, 5)
-        bst_lrd = []
-        LRD(bst, bst_lrd)
+        bst_ldr = []
+        LDR(bst, bst_ldr)
+        ldr2 = LDR_stack(bst)
+        if not is_same_arr(bst_ldr, ldr2):
+            print('no')
+            print(bst_ldr)
 
-        bst_generate = generate_BST_by_LRD2(bst_lrd, 0, len(bst_lrd)-1)
-        bst_generate_lrd = []
-        LRD(bst_generate, bst_generate_lrd)
+        # bst_generate = generate_BST_by_LRD2(bst_lrd, 0, len(bst_lrd)-1)
+        # bst_generate_lrd = []
+        # LRD(bst_generate, bst_generate_lrd)
 
-        if not is_same_arr(bst_lrd, bst_generate_lrd):
-            print('oh no.')
-            print(bst_lrd)
+        # if not is_same_arr(bst_lrd, bst_generate_lrd):
+        #     print('oh no.')
+        #     print(bst_lrd)
         # print(bst_lrd)
         # print('ok')
     print('ok.')
