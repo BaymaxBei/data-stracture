@@ -6,8 +6,9 @@ class Node:
     '''
     节点
     '''
-    def __init__(self, value) -> None:
+    def __init__(self, value, index=0) -> None:
         self.value = value
+        self.index = index
         self.left = None
         self.right = None
 
@@ -24,6 +25,23 @@ def generate_random_BST(min, max, level, n):
     head.left = generate_random_BST(min, value-1, level+1, n)
     head.right = generate_random_BST(value+1, max, level+1, n)
     return head
+
+def generate_BST_from_arr(arr):
+    head = Node(arr[0], 0)
+    for i, v in enumerate(arr[1:]):
+        node = head
+        while (node.left and v<node.value) or (node.right and v>=node.value):
+            if v<node.value:
+                node = node.left
+            else:
+                node = node.right
+        if v<node.value: # v小于node且左节点为空
+            node.left = Node(v, i)
+        else: # v大于node且右节点为空
+            node.right = Node(v, i)
+    return head
+
+
 
 def LDR(head, res):
     '''
@@ -195,3 +213,27 @@ if __name__ == '__main__':
         # print('ok')
     print('ok.')
 
+    # for i in range(10000):
+        
+    #     bst = generate_random_BST(1, 100, 1, 5)
+    #     bst_lrd = []
+    #     LRD(bst, bst_lrd)
+
+    #     bst_generate = generate_BST_by_LRD2(bst_lrd, 0, len(bst_lrd)-1)
+    #     bst_generate_lrd = []
+    #     LRD(bst_generate, bst_generate_lrd)
+
+    #     if not is_same_arr(bst_lrd, bst_generate_lrd):
+    #         print('oh no.')
+    #         print(bst_lrd)
+    #     # print(bst_lrd)
+    #     # print('ok')
+    # print('ok.')
+
+    # arr = [8]
+    # arr.extend(list(range(10)))
+    # arr = [0]*10
+    # arr = [random.randrange(0, 10, 1) for i in arr]
+    # print(arr)
+    # bst = generate_BST_from_arr(arr)
+    # print(bst)
