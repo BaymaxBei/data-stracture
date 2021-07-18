@@ -80,6 +80,26 @@ class PreMidOrPrePreMid:
 
 
 # 输入链表头结点，奇数长度返回中点前一个，偶数长度返回下中点前一个
+class PreMidOrPrePostMid:
+    def solution(self, head):
+        if head is None or head.next is None:
+            return None
+        slow = head
+        fast = head.next
+        while fast.next is not None and fast.next.next is not None:
+            slow = slow.next
+            fast = fast.next.next
+        return slow.value
+
+    def base(self, head):
+        if head is None or head.next is None:
+            return None
+        arr = []
+        while head:
+            arr.append(head.value)
+            head = head.next
+        return arr[int(len(arr)/2)-1]
+
 
 # 生成测试链表
 class Test:
@@ -118,7 +138,16 @@ if __name__ == '__main__':
 
         # print(PreMidOrPrePreMid().base(linklist))
         # print(PreMidOrPrePreMid().solution(linklist))
-        if PreMidOrPrePreMid().base(linklist)!=PreMidOrPrePreMid().solution(linklist):
+        # if PreMidOrPrePreMid().base(linklist)!=PreMidOrPrePreMid().solution(linklist):
+        #     print('no')
+        #     while linklist:
+        #         print(linklist.value)
+        #         linklist = linklist.next
+        #     print('----------')
+
+        # print(PreMidOrPrePostMid().base(linklist))
+        # print(PreMidOrPrePostMid().solution(linklist))
+        if PreMidOrPrePostMid().base(linklist)!=PreMidOrPrePostMid().solution(linklist):
             print('no')
             while linklist:
                 print(linklist.value)
