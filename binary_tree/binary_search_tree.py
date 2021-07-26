@@ -13,7 +13,7 @@ class Node:
         self.right = None
 
 
-def generate_random_BST(min, max, level, n):
+def generate_random_BST(min, max, level=1, n=3):
     '''
     # 随机生成二叉搜索树
     最小值为min，最大值为max，最大高度为n
@@ -41,7 +41,56 @@ def generate_BST_from_arr(arr):
             node.right = Node(v, i)
     return head
 
+def level_traversal(head):
+    res = []
+    queue = []
+    queue.append(head)
+    while queue:
+        node = queue.pop(0)
+        res.append(node.value if node else node)
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+    return res
 
+def DLR_Series(head, res):
+    '''
+    前序遍历二叉树，序列化，空节点返回空
+    '''
+    res.append(head.value)
+    if head.left:
+        DLR_Series(head.left, res)
+    elif head.right:
+        res.append(None)
+    if head.right:
+        DLR_Series(head.right, res)
+    elif head.left:
+        res.append(None)
+
+def DLR(head, res):
+    '''
+    # 前序遍历二叉树
+    '''
+    res.append(head.value)
+    if head.left:
+        DLR(head.left, res)
+    if head.right:
+        DLR(head.right, res)
+
+def LDR_Series(head, res):
+    '''
+    中序遍历二叉树，序列化，空节点返回空
+    '''
+    if head.left:
+        LDR_Series(head.left, res)
+    elif head.right:
+        res.append(None)
+    res.append(head.value)
+    if head.right:
+        LDR_Series(head.right, res)
+    elif head.left:
+        res.append(None)
 
 def LDR(head, res):
     '''
@@ -62,16 +111,6 @@ def LRD(head, res):
     if head.right:
         LRD(head.right, res)
     res.append(head.value)
-
-def DLR(head, res):
-    '''
-    # 前序遍历二叉树
-    '''
-    res.append(head.value)
-    if head.left:
-        DLR(head.left, res)
-    if head.right:
-        DLR(head.right, res)
 
 def DLR_stack(head):
     '''
@@ -105,6 +144,95 @@ def LDR_stack(head):
             node = stack.pop(-1)
             res.append(node.value)
             node = node.right
+    return res
+
+def LDR_stack_2(head):
+    '''
+    中序遍历二叉树，非递归，用栈
+    '''
+    node = head
+    stack = []
+    res = []
+    stack.append(node)
+    while stack:
+        if node.left is not None:
+            node = node.left
+            stack.append(node)
+        elif node.right is not None:
+            node = stack.pop(-1)
+            res.append(node.value)
+            node = node.right
+            stack.append(node)
+        else:
+            node = stack.pop(-1)
+            res.append(node.value)
+            while node.right is None and stack:
+                node = stack.pop(-1)
+                res.append(node.value)
+            if node.right is not None:
+                node = node.right
+                stack.append(node)
+    return res
+
+
+def LDR_stack_3(head):
+    '''
+    中序遍历二叉树，非递归，用栈
+    '''
+    node = head
+    stack = []
+    res = []
+    stack.append(node)
+    while stack:
+        if node.left is not None:
+            node = node.left
+            stack.append(node)
+        else:
+            node = stack.pop(-1)
+            res.append(node.value)
+            while node.right is None and stack:
+                node = stack.pop(-1)
+                res.append(node.value)
+            if node.right is not None:
+                node = node.right
+                stack.append(node)
+    return res
+
+def LRD_stack(head):
+    '''
+    后序遍历二叉树，非递归，用栈
+    '''
+    res = []
+    stack = []
+    while head is not None or stack:
+        if head is not None:
+            stack.append(head)
+            res.append(head.value)
+            head = head.right
+        else:
+            head = stack.pop(-1)
+            head = head.left
+    res.reverse()
+    return res
+
+def LRD_stack_2(head):
+    '''
+    后序遍历二叉树，用栈和标记符
+    '''
+    res = []
+    stack = []
+    stack.append(head)
+    cur_peek = None # 表示当前栈顶节点，
+    last_pop = head # 这里的设置要以不影响逻辑判断为依据，不能设置为None
+    while stack:
+        cur_peek = stack[-1]
+        if cur_peek.left is not None and last_pop != cur_peek.left and last_pop != cur_peek.right:
+            stack.append(cur_peek.left)
+        elif cur_peek.right is not None and last_pop != cur_peek.right:
+            stack.append(cur_peek.right)
+        else:
+            last_pop = stack.pop(-1)
+            res.append(last_pop.value)
     return res
 
 def is_same_arr(arr1, arr2):
@@ -186,21 +314,160 @@ def generate_BST_by_LRD2(arr, l, r):
     node.right = generate_BST_by_LRD2(arr, flag+1, r-1)
     return node
 
+def max_level_num(head):
+    '''
+    求二叉树的最长层的节点数
+    '''
+    if head is None:
+        return 0
+    queue = []
+    node_level_dict = {}
+    cur_level = 1
+    cur_num = 1
+    max_level_num = 1
+    level_num = [1]
+    node_level_dict[head] = 1
+    queue.append(head)
+    while queue:
+        node = queue.pop(0)
+        if node.left is not None:
+            queue.append(node.left)
+            node_level = node_level_dict[node] + 1
+            node_level_dict[node.left] = node_level
+            if node_level==cur_level:
+                cur_num += 1
+            else:
+                cur_level = node_level
+                max_level_num = max(cur_num, max_level_num)
+                level_num.append(cur_num)
+                cur_num = 1
+        if node.right is not None:
+            queue.append(node.right)
+            node_level = node_level_dict[node] + 1
+            node_level_dict[node.right] = node_level
+            if node_level==cur_level:
+                cur_num += 1
+            else:
+                cur_level = node_level
+                max_level_num = max(cur_num, max_level_num)
+                level_num.append(cur_num)
+                cur_num = 1
+    level_num.append(cur_num)
+    return max(cur_num,max_level_num), level_num
+
+
+def series_test():
+    arr = [random.randint(1, 20) for i in range(9)]
+    arr = [9, 10, 2, 13, 14, 17, 11, 6, 3]
+    print(arr)
+    bst = generate_BST_from_arr(arr)
+
+    res = level_traversal(bst)
+    print('层次遍历：{}'.format(res))
+
+    bst_dlr_series = []
+    DLR_Series(bst, bst_dlr_series)
+    print('前序序列化：{}'.format(bst_dlr_series))
+
+    bst_dlr = []
+    DLR(bst, bst_dlr)
+    print('前序遍历：{}'.format(bst_dlr))
+
+    bst_ldr_series = []
+    LDR_Series(bst, bst_ldr_series)
+    print('中序序列化：{}'.format(bst_ldr_series))
+
+    bst_ldr = []
+    LDR(bst, bst_ldr)
+    print('中序遍历：{}'.format(bst_ldr))
+
+def traversal_test():
+    arr = [9, 10, 2, 13, 14, 17, 11, 6, 3]
+    print(arr)
+    bst = generate_BST_from_arr(arr)
+
+    bst_ldr_series = []
+    LDR_Series(bst, bst_ldr_series)
+    print('中序序列化：{}'.format(bst_ldr_series))
+
+    bst_ldr = []
+    LDR(bst, bst_ldr)
+    print('中序遍历：{}'.format(bst_ldr))
+
+    res = LDR_stack_2(bst)
+    print('中序遍历，非递归2：{}'.format(res))
+
+    res = LDR_stack_3(bst)
+    print('中序遍历，非递归3：{}'.format(res))
+
+def lrd_test():
+    arr = [9, 10, 2, 13, 14, 17, 11, 6, 3]
+    print(arr)
+    bst = generate_BST_from_arr(arr)
+
+    lrd = []
+    LRD(bst, lrd)
+    print('后序遍历：{}'.format(lrd))
+
+    res = LRD_stack(bst)
+    print('后序遍历，用栈：{}'.format(res))
+
+    res = LRD_stack_2(bst)
+    print('后序遍历，用栈2：{}'.format(res))
+
+    error = 0
+    for i in range(100):
+        bst = generate_random_BST(1, 30)
+        lrd = []
+        LRD(bst, lrd)
+
+        lrd_stack_2 = LRD_stack_2(bst)
+        if not is_same_arr(lrd, lrd_stack_2):
+            print('no')
+            print(lrd)
+            error += 1
+    print('ok')
+    print('error: {}'.format(error))
+
+def max_level_num_test():
+    # arr = [9, 10, 2, 13, 14, 17, 11, 6, 3]
+    # print(arr)
+    # bst = generate_BST_from_arr(arr)
+    bst = generate_random_BST(1, 200, 1, 5)
+    print(level_traversal(bst))
+    print(max_level_num(bst))
+
+
 
 if __name__ == '__main__':
+    # series_test()
+
+    # traversal_test()
+
+    # lrd_test()
+
+    max_level_num_test()
+
     # arr = [3,4,5,11,16,15,10]
     # bst = generate_BST_by_LRD2(arr, 0, len(arr)-1)
     # print('End.')
     
-    for i in range(10):
+    # error = 0
+    # for i in range(10):
         
-        bst = generate_random_BST(1, 100, 1, 5)
-        bst_ldr = []
-        LDR(bst, bst_ldr)
-        ldr2 = LDR_stack(bst)
-        if not is_same_arr(bst_ldr, ldr2):
-            print('no')
-            print(bst_ldr)
+    #     bst = generate_random_BST(1, 100, 1, 3)
+    #     bst_ldr_series = []
+    #     LDR_Series(bst, bst_ldr_series)
+    #     bst_ldr = []
+    #     LDR(bst, bst_ldr)
+    #     print(bst_ldr_series)
+    #     print(bst_ldr)
+        # ldr2 = LDR_stack_2(bst)
+        # if not is_same_arr(bst_ldr, ldr2):
+        #     error += 1
+        #     print('no')
+        #     print(bst_ldr)
+        #     print(ldr2)
 
         # bst_generate = generate_BST_by_LRD2(bst_lrd, 0, len(bst_lrd)-1)
         # bst_generate_lrd = []
@@ -211,7 +478,8 @@ if __name__ == '__main__':
         #     print(bst_lrd)
         # print(bst_lrd)
         # print('ok')
-    print('ok.')
+    # print('ok.')
+    # print('error: {}'.format(error))
 
     # for i in range(10000):
         
