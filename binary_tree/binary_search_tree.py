@@ -61,12 +61,24 @@ def DLR_Series(head, res):
     res.append(head.value)
     if head.left:
         DLR_Series(head.left, res)
-    elif head.right:
+    else:
         res.append(None)
     if head.right:
         DLR_Series(head.right, res)
-    elif head.left:
+    else:
         res.append(None)
+
+def deserialize_DLR(arr):
+    if not arr:
+        return None
+    value = arr.pop(0)
+    if value:
+        head = Node(value)
+        head.left = deserialize_DLR(arr)
+        head.right = deserialize_DLR(arr)
+    else:
+        head = value
+    return head
 
 def DLR(head, res):
     '''
@@ -362,24 +374,27 @@ def series_test():
     print(arr)
     bst = generate_BST_from_arr(arr)
 
-    res = level_traversal(bst)
-    print('层次遍历：{}'.format(res))
+    # res = level_traversal(bst)
+    # print('层次遍历：{}'.format(res))
 
     bst_dlr_series = []
     DLR_Series(bst, bst_dlr_series)
     print('前序序列化：{}'.format(bst_dlr_series))
 
+    deserialize_dlr = deserialize_DLR(bst_dlr_series)
+
+
     bst_dlr = []
-    DLR(bst, bst_dlr)
+    DLR(deserialize_dlr, bst_dlr)
     print('前序遍历：{}'.format(bst_dlr))
 
-    bst_ldr_series = []
-    LDR_Series(bst, bst_ldr_series)
-    print('中序序列化：{}'.format(bst_ldr_series))
+    # bst_ldr_series = []
+    # LDR_Series(bst, bst_ldr_series)
+    # print('中序序列化：{}'.format(bst_ldr_series))
 
-    bst_ldr = []
-    LDR(bst, bst_ldr)
-    print('中序遍历：{}'.format(bst_ldr))
+    # bst_ldr = []
+    # LDR(bst, bst_ldr)
+    # print('中序遍历：{}'.format(bst_ldr))
 
 def traversal_test():
     arr = [9, 10, 2, 13, 14, 17, 11, 6, 3]
@@ -440,13 +455,13 @@ def max_level_num_test():
 
 
 if __name__ == '__main__':
-    # series_test()
+    series_test()
 
     # traversal_test()
 
     # lrd_test()
 
-    max_level_num_test()
+    # max_level_num_test()
 
     # arr = [3,4,5,11,16,15,10]
     # bst = generate_BST_by_LRD2(arr, 0, len(arr)-1)
