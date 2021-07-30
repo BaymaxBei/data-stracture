@@ -139,7 +139,6 @@ def most_value_of_bags_2(bags_list, index, cur_weight, max_weight):
 def get_most_value_of_bags_2(bags_list, max_weight):
     return most_value_of_bags_2(bags_list, 0, 0, max_weight)
 
-
 def get_most_value_of_bags_test():
     class Bag:
         def __init__(self, weight, value) -> None:
@@ -150,6 +149,11 @@ def get_most_value_of_bags_test():
     bags_list = [Bag(i, j) for i, j in zip(weights, values)]
     print(get_most_value_of_bags(bags_list, 3))
     print(get_most_value_of_bags_2(bags_list, 3))
+
+
+'''
+N皇后问题
+'''
 
 if __name__ == '__main__':
     # string = 'abaa'
